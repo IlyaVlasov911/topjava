@@ -21,6 +21,13 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
+    <form method="get">
+        <input name="dateFrom" type="date" value="${param.dateFrom}"/>
+        <input name="dateTo" type="date" value="${param.dateTo}"/>
+        <input name="timeFrom" type="time" value="${param.timeFrom}"/>
+        <input name="timeTo" type="time" value="${param.timeTo}"/>
+        <input type="submit">
+    </form>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
