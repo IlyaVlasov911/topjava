@@ -3,11 +3,14 @@ package ru.javawebinar.topjava.util;
 
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
+import org.springframework.validation.FieldError;
 import ru.javawebinar.topjava.HasId;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.*;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ValidationUtil {
 
@@ -71,5 +74,11 @@ public class ValidationUtil {
     public static Throwable getRootCause(@NonNull Throwable t) {
         Throwable rootCause = NestedExceptionUtils.getRootCause(t);
         return rootCause != null ? rootCause : t;
+    }
+
+    public static String errorsToString(List<FieldError> fieldErrors) {
+        return fieldErrors.stream()
+                .map(fieldError -> String.format("[%s], %s", fieldError.getField(), fieldError.getDefaultMessage()))
+                .collect(Collectors.joining("<br>"));
     }
 }

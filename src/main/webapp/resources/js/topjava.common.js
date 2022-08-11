@@ -23,7 +23,7 @@ function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(ctx.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
-            form.find("input[name='" + key + "']").val(value);
+            form.find("input[name='" + key + "']").val(key === "dateTime" ? value.replace("T", " ").substring(0, 16) : value);
         });
         $('#editRow').modal();
     });
@@ -49,7 +49,7 @@ function save() {
     $.ajax({
         type: "POST",
         url: ctx.ajaxUrl,
-        data: form.serialize()
+        data: form.serializeArray().map(x => x.name === "dateTime" ? (x.value = x.value().replace(" ", "T")).substring(0, 16) + ":00" && x : x)
     }).done(function () {
         $("#editRow").modal("hide");
         ctx.updateTable();
@@ -97,3 +97,41 @@ function failNoty(jqXHR) {
     });
     failedNote.show()
 }
+
+$('input#startDate[data-datetimepicker-type=date]').datetimepicker({
+    timepicker: false,
+    format: 'Y-m-d',
+    onShow: function (ct) {
+        const val = $('#endDate').val();
+        if (val) this.setOptions({maxDate: val});
+    }
+});
+
+$('input#endDate[data-datetimepicker-type=date]').datetimepicker({
+    timepicker: false,
+    format: 'Y-m-d',
+    onShow: function (ct) {
+        const val = $('#startDate').val();
+        if (val) this.setOptions({minDate: val});
+    }
+});
+
+$('input#startTime[data-datetimepicker-type=time]').datetimepicker({
+    datepicker: false,
+    format: 'H:i',
+    onShow: function (ct) {
+        const val = $('#endTime').val();
+        if (val) this.setOptions({maxTime: val});
+    }
+});
+
+$('input#endTime[data-datetimepicker-type=time]').datetimepicker({
+    datepicker: false,
+    format: 'H:i',
+    onShow: function (ct) {
+        const val = $('#startTime').val();
+        if (val) this.setOptions({minTime: val});
+    }
+});
+
+$('input[data-datetimepicker-type=datetime]').datetimepicker({format: 'Y-m-d H:i'});
